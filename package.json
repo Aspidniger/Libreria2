@@ -1,0 +1,26 @@
+{
+  "name": "univalleposgrado-mylibrary",
+  "version": "1.0.0",
+  "description": "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)\r [![Firebase](https://img.shields.io/badge/Firebase-9.22.0-orange.svg)](https://firebase.google.com/)\r [![React Native](https://img.shields.io/badge/React%20Native-0.72-blue.svg)](https://reactnative.dev/)\r [![Flutter](https://img.shields.io/badge/Flutter-3.10-blue.svg)](https://flutter.dev/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlos-olivera/UnivallePosgrado-MyLibrary.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/carlos-olivera/UnivallePosgrado-MyLibrary/issues"
+  },
+  "homepage": "https://github.com/carlos-olivera/UnivallePosgrado-MyLibrary#readme",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "expo": "^53.0.11"
+    
+  }
+}
