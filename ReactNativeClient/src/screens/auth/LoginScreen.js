@@ -19,33 +19,13 @@ import {
   validators 
 } from '../../components/forms/Input';
 
-/**
- * **PANTALLA DE LOGIN EDUCATIVA** 🔐
- * 
- * Pantalla que demuestra las mejores prácticas de UX para autenticación:
- * - Formulario con validación en tiempo real
- * - Estados de carga claros
- * - Manejo de errores específicos
- * - Navegación intuitiva
- * - Accesibilidad completa
- * 
- * Principios UX demostrados:
- * - Simplicidad en el formulario
- * - Feedback inmediato
- * - Recuperación de errores
- * - Call-to-action claros
- * - Consistencia visual
- */
-
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
   const { signIn, loading, error, clearError } = useAuth();
   const { showLoginSuccess, showError } = useToast();
-  
-  // **REFS PARA NAVEGACIÓN DE INPUTS** 📱
+
   const passwordRef = useRef(null);
 
-  // **VALIDACIÓN DE INPUTS** ✅
   const email = useInputValidation('', [
     validators.required('Email es requerido'),
     validators.email()
@@ -56,10 +36,8 @@ const LoginScreen = ({ navigation }) => {
     validators.minLength(6, 'Contraseña debe tener al menos 6 caracteres')
   ]);
 
-  // **ESTADO LOCAL** 📊
   const [showPassword, setShowPassword] = useState(false);
 
-  // **ESTILOS DINÁMICOS** 🎨
   const dynamicStyles = StyleSheet.create({
     container: {
       flex: 1,
@@ -68,12 +46,12 @@ const LoginScreen = ({ navigation }) => {
     scrollContent: {
       flexGrow: 1,
       justifyContent: 'center',
-      paddingHorizontal: theme.spacing.xl,
-      paddingVertical: theme.spacing.xxl,
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.lg,
     },
     header: {
       alignItems: 'center',
-      marginBottom: theme.spacing.xxl,
+      marginBottom: theme.spacing.xl,
     },
     logo: {
       width: 80,
@@ -90,37 +68,37 @@ const LoginScreen = ({ navigation }) => {
       color: 'white',
     },
     title: {
-      fontSize: 28,
+      fontSize: 24,
       fontWeight: 'bold',
       color: theme.customColors.text.primary,
       textAlign: 'center',
-      marginBottom: theme.spacing.sm,
+      marginBottom: theme.spacing.xs,
     },
     subtitle: {
-      fontSize: 16,
+      fontSize: 14,
       color: theme.customColors.text.secondary,
       textAlign: 'center',
-      lineHeight: 24,
+      lineHeight: 20,
     },
     form: {
       width: '100%',
-      marginBottom: theme.spacing.xl,
+      marginBottom: theme.spacing.lg,
     },
     inputContainer: {
-      marginBottom: theme.spacing.md,
+      marginBottom: theme.spacing.sm,
     },
     loginButton: {
-      marginTop: theme.spacing.lg,
-      marginBottom: theme.spacing.md,
+      marginTop: theme.spacing.md,
+      marginBottom: theme.spacing.sm,
     },
     forgotPassword: {
       alignSelf: 'center',
-      marginBottom: theme.spacing.xl,
+      marginBottom: theme.spacing.lg,
     },
     dividerContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginVertical: theme.spacing.lg,
+      marginVertical: theme.spacing.md,
     },
     dividerLine: {
       flex: 1,
@@ -134,18 +112,18 @@ const LoginScreen = ({ navigation }) => {
     },
     footer: {
       alignItems: 'center',
-      marginTop: theme.spacing.xl,
+      marginTop: theme.spacing.md,
     },
     signupContainer: {
       flexDirection: 'row',
       alignItems: 'center',
     },
     signupText: {
-      fontSize: 16,
+      fontSize: 14,
       color: theme.customColors.text.secondary,
     },
     demoSection: {
-      marginTop: theme.spacing.xl,
+      marginTop: theme.spacing.lg,
       padding: theme.spacing.md,
       backgroundColor: theme.customColors.background.secondary,
       borderRadius: 12,
@@ -160,24 +138,21 @@ const LoginScreen = ({ navigation }) => {
       textAlign: 'center',
     },
     demoText: {
-      fontSize: 12,
+      fontSize: 11,
       color: theme.customColors.text.secondary,
       textAlign: 'center',
-      lineHeight: 18,
+      lineHeight: 16,
     }
   });
 
-  // **VALIDAR FORMULARIO** ✅
+  // Activar botón solo si hay algo en password
   const isFormValid = () => {
-    return email.isValid && password.isValid && email.value && password.value;
+    return password.value.length > 0;
   };
 
-  // **MANEJAR LOGIN** 🔐
   const handleLogin = async () => {
-    // Limpiar errores previos
     clearError();
 
-    // Validar formulario
     const isEmailValid = email.validate();
     const isPasswordValid = password.validate();
 
@@ -188,13 +163,9 @@ const LoginScreen = ({ navigation }) => {
 
     try {
       const result = await signIn(email.value, password.value);
-      
       if (result.success) {
-        // Extraer nombre del email para personalizar mensaje
         const userName = email.value.split('@')[0];
         showLoginSuccess(userName);
-        
-        // La navegación se maneja automáticamente por el AuthContext
       } else {
         showError(result.error || 'Error al iniciar sesión');
       }
@@ -203,7 +174,6 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  // **NAVEGACIÓN A OTRAS PANTALLAS** 🧭
   const handleForgotPassword = () => {
     navigation.navigate('ForgotPassword', { email: email.value });
   };
@@ -215,8 +185,6 @@ const LoginScreen = ({ navigation }) => {
   const handleDemoLogin = () => {
     email.setValue('estudiante1@example.com');
     password.setValue('password123');
-    
-    // Auto login después de un momento para mostrar el efecto
     setTimeout(() => {
       handleLogin();
     }, 500);
@@ -234,22 +202,20 @@ const LoginScreen = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* **HEADER CON LOGO** 🎨 */}
           <View style={dynamicStyles.header}>
             <View style={dynamicStyles.logo}>
-              <Text style={dynamicStyles.logoText}>📚</Text>
+              <Text style={dynamicStyles.logoText}>📖</Text>
             </View>
-            
+
             <Text style={dynamicStyles.title}>
               Bienvenido
             </Text>
-            
+
             <Text style={dynamicStyles.subtitle}>
               Inicia sesión para acceder a tu librería personal
             </Text>
           </View>
 
-          {/* **FORMULARIO DE LOGIN** 📝 */}
           <View style={dynamicStyles.form}>
             <View style={dynamicStyles.inputContainer}>
               <EmailInput
@@ -301,16 +267,14 @@ const LoginScreen = ({ navigation }) => {
             </TextButton>
           </View>
 
-          {/* **DIVIDER** ➖ */}
           <View style={dynamicStyles.dividerContainer}>
             <View style={dynamicStyles.dividerLine} />
           </View>
 
-          {/* **FOOTER CON REGISTRO** 👤 */}
           <View style={dynamicStyles.footer}>
             <View style={dynamicStyles.signupContainer}>
               <Text style={dynamicStyles.signupText}>
-                ¿No tienes cuenta? 
+                ¿No tienes cuenta?
               </Text>
               <TextButton
                 onPress={handleSignup}
@@ -322,7 +286,6 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </ScrollView>
 
-        {/* **OVERLAY DE CARGA** ⏳ */}
         {loading && (
           <LoadingOverlay
             message="Iniciando sesión..."

@@ -111,11 +111,13 @@ const SignupScreen = ({ navigation }) => {
     title: {
       fontSize: 24,
       fontWeight: 'bold',
+      textAlign: 'center', // centrado
       color: theme.customColors.text.primary,
       marginBottom: theme.spacing.xs,
     },
     subtitle: {
       fontSize: 16,
+      textAlign: 'center', // centrado
       color: theme.customColors.text.secondary,
       lineHeight: 22,
     },
@@ -131,6 +133,9 @@ const SignupScreen = ({ navigation }) => {
     },
     inputContainer: {
       marginBottom: theme.spacing.md,
+      borderRadius: 12, // nuevo
+      backgroundColor: 'white', // opcional, si quieres fondo blanco
+      paddingHorizontal: 10, // más espacio interno
     },
     nameRow: {
       flexDirection: 'row',
@@ -151,21 +156,21 @@ const SignupScreen = ({ navigation }) => {
       height: 4,
       borderRadius: 2,
     },
-    termsContainer: {
+   termsContainer: {
       flexDirection: 'row',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      gap: theme.spacing.sm,
       marginVertical: theme.spacing.lg,
     },
     checkbox: {
-      width: 20,
-      height: 20,
+      width: 24,
+      height: 24,
+      borderRadius: 6,
       borderWidth: 2,
-      borderColor: theme.customColors.border.medium,
-      borderRadius: 4,
-      marginRight: theme.spacing.sm,
+      borderColor: acceptedTerms ? theme.customColors.primary : theme.customColors.border.medium,
+      backgroundColor: acceptedTerms ? theme.customColors.primary : 'transparent',
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 2,
     },
     checkboxChecked: {
       backgroundColor: theme.customColors.primary,
@@ -173,7 +178,7 @@ const SignupScreen = ({ navigation }) => {
     },
     checkmark: {
       color: 'white',
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: 'bold',
     },
     termsText: {
@@ -194,13 +199,17 @@ const SignupScreen = ({ navigation }) => {
     },
     buttonRow: {
       flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
       gap: theme.spacing.sm,
     },
     backButton: {
       flex: 1,
+      borderRadius: 10,
     },
     nextButton: {
-      flex: 2,
+      flex: 1,
+      borderRadius: 10,
     },
     loginContainer: {
       flexDirection: 'row',
@@ -251,7 +260,7 @@ const SignupScreen = ({ navigation }) => {
       strength: (score / 4),
       text: feedback.length > 0 ? `Falta: ${feedback.join(', ')}` : strengthInfo.text,
       color: strengthInfo.color
-    };
+    }
   };
 
   // **VALIDAR PASO ACTUAL** ✅
@@ -543,6 +552,6 @@ const SignupScreen = ({ navigation }) => {
       )}
     </SafeAreaView>
   );
-};
+}
 
 export default SignupScreen;
