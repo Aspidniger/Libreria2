@@ -125,8 +125,8 @@ const ReviewScreen = ({ route, navigation }) => {
       marginBottom: 8,
     },
     starsContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
+      flexDirection: 'row',
+      marginBottom: 8,
     },
     starIcon: {
       marginHorizontal: 4,
@@ -181,10 +181,63 @@ const ReviewScreen = ({ route, navigation }) => {
     previewSection: {
       padding: theme.spacing.xl,
     },
-    previewCard: {
-      padding: theme.spacing.lg,
-      marginBottom: theme.spacing.lg,
+
+    modalContainer: {
+      padding: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
+    previewCard: {
+      width: '100%',
+      maxWidth: 400,
+      backgroundColor: theme.colors.surface,
+      borderRadius: 16,
+      padding: 20,
+      elevation: 4,
+    },
+    previewHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 16,
+    },
+    previewTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: theme.customColors.text.primary,
+    },
+    closeIcon: {
+      padding: 4,
+    },
+    previewContent: {
+      marginBottom: 24,
+    },
+    ratingText: {
+      marginLeft: 8,
+      fontSize: 14,
+      color: theme.customColors.text.secondary,
+    },
+    reviewText: {
+      fontSize: 16,
+      lineHeight: 22,
+      color: theme.customColors.text.primary,
+      marginTop: 12,
+      marginBottom: 16,
+    },
+    previewPrivacy: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    privacyText: {
+      fontSize: 13,
+      color: theme.customColors.text.secondary,
+    },
+    confirmButton: {
+      marginTop: 8,
+      borderRadius: 10,
+    },
+
     reviewHeader: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -233,6 +286,33 @@ const ReviewScreen = ({ route, navigation }) => {
       color: theme.customColors.text.secondary,
       textAlign: 'center',
     },
+    deleteDialog: {
+      borderRadius: 12,
+      backgroundColor: theme.colors.surface,
+      paddingBottom: 8,
+    },
+    deleteTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: theme.customColors.text.primary,
+    },
+    deleteText: {
+      fontSize: 14,
+      color: theme.customColors.text.secondary,
+      marginTop: 4,
+    },
+    dialogActions: {
+      justifyContent: 'flex-end',
+      paddingHorizontal: 16,
+      paddingBottom: 8,
+    },
+    cancelButton: {
+      marginRight: 8,
+    },
+    confirmDeleteButton: {
+      backgroundColor: theme.customColors.error,
+    },
+
   });
 
   // **CARGAR RESEÑAS EXISTENTES** 📥
@@ -366,93 +446,109 @@ const ReviewScreen = ({ route, navigation }) => {
 
   // **RENDERIZAR VISTA PREVIA** 👁️
   const renderPreview = () => (
-    <Portal>
-      <Dialog visible={showPreview} onDismiss={() => setShowPreview(false)} style={{ maxHeight: '80%' }}>
-        <Dialog.Title>Vista previa de tu reseña</Dialog.Title>
-        <Dialog.ScrollArea>
-          <ScrollView>
-            <Card style={dynamicStyles.previewCard}>
-              <View style={dynamicStyles.reviewHeader}>
-                <Avatar.Text
-                  size={40}
-                  label={(userProfile?.nombre || user.email || 'U').charAt(0).toUpperCase()}
-                />
-                <View style={dynamicStyles.reviewerInfo}>
-                  <Text style={dynamicStyles.reviewerName}>
-                    {userProfile?.nombre || user.displayName || 'Tu nombre'}
-                  </Text>
-                  <Text style={dynamicStyles.reviewDate}>
-                    {new Date().toLocaleDateString()}
-                  </Text>
-                </View>
-              </View>
-              
-              <View style={dynamicStyles.reviewRating}>
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Icon
-                      key={star}
-                      name={star <= rating ? 'star' : 'star-outline'}
-                      size={16}
-                      color="#FFD700"
-                      style={{ marginRight: 2 }}
-                    />
-                  ))}
-                </View>
-                <Text style={{ marginLeft: 8, color: theme.customColors.text.secondary }}>
-                  {rating}/5
-                </Text>
-              </View>
-              
-              <Text style={dynamicStyles.reviewText}>{reviewText}</Text>
-              
-              {isPrivate && (
-                <View style={{ 
-                  flexDirection: 'row', 
-                  alignItems: 'center', 
-                  marginTop: theme.spacing.sm 
-                }}>
-                  <Icon name="lock" size={14} color={theme.customColors.text.secondary} />
-                  <Text style={{ 
-                    marginLeft: 4, 
-                    fontSize: 12, 
-                    color: theme.customColors.text.secondary 
-                  }}>
-                    Reseña privada
-                  </Text>
-                </View>
-              )}
-            </Card>
-          </ScrollView>
-        </Dialog.ScrollArea>
-        <Dialog.Actions>
-          <Button onPress={() => setShowPreview(false)}>Cerrar</Button>
-          <Button onPress={handleSaveReview} mode="contained" loading={saving}>
-            {isEditing ? 'Actualizar' : 'Publicar'}
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
-  );
+  <Portal>
+    <Modal
+      visible={showPreview}
+      onDismiss={() => setShowPreview(false)}
+      contentContainerStyle={dynamicStyles.modalContainer}
+    >
+      <Surface style={dynamicStyles.previewCard}>
+        <View style={dynamicStyles.previewHeader}>
+          <Text style={dynamicStyles.previewTitle}>Vista previa</Text>
+          <Icon
+            name="close"
+            size={24}
+            color={theme.customColors.text.secondary}
+            onPress={() => setShowPreview(false)}
+            style={dynamicStyles.closeIcon}
+          />
+        </View>
+
+        <View style={dynamicStyles.previewContent}>
+          {/* Calificación con estrellas */}
+          <View style={dynamicStyles.starsContainer}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Icon
+                key={star}
+                name={star <= rating ? 'star' : 'star-outline'}
+                size={22}
+                color="#FFD700"
+                style={{ marginRight: 2 }}
+              />
+            ))}
+            <Text style={dynamicStyles.ratingText}>{rating}/5</Text>
+          </View>
+
+          {/* Texto de la reseña */}
+          <Text style={dynamicStyles.reviewText}>{reviewText.trim()}</Text>
+
+          {/* Etiqueta de privacidad */}
+          <View style={dynamicStyles.previewPrivacy}>
+            <Icon
+              name={isPrivate ? 'lock' : 'earth'}
+              size={16}
+              color={theme.customColors.text.secondary}
+              style={{ marginRight: 6 }}
+            />
+            <Text style={dynamicStyles.privacyText}>
+              {isPrivate ? 'Esta reseña será privada' : 'Esta reseña será pública'}
+            </Text>
+          </View>
+        </View>
+
+        <Button
+          mode="contained"
+          onPress={() => {
+            setShowPreview(false);
+            handleSaveReview();
+          }}
+          style={dynamicStyles.confirmButton}
+        >
+          {isEditing ? 'Actualizar reseña' : 'Publicar reseña'}
+        </Button>
+      </Surface>
+    </Modal>
+  </Portal>
+);
+
 
   // **RENDERIZAR DIÁLOGO DE ELIMINACIÓN** 🗑️
   const renderDeleteDialog = () => (
-    <Portal>
-      <Dialog visible={showDeleteDialog} onDismiss={() => setShowDeleteDialog(false)}>
-        <Dialog.Icon icon="delete" />
-        <Dialog.Title>Eliminar reseña</Dialog.Title>
-        <Dialog.Content>
-          <Text>¿Estás seguro de que quieres eliminar tu reseña? Esta acción no se puede deshacer.</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setShowDeleteDialog(false)}>Cancelar</Button>
-          <Button onPress={handleDeleteReview} mode="contained" loading={saving}>
-            Eliminar
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
-  );
+  <Portal>
+    <Dialog
+      visible={showDeleteDialog}
+      onDismiss={() => setShowDeleteDialog(false)}
+      style={dynamicStyles.deleteDialog}
+    >
+      <Dialog.Icon icon="alert-circle" color={theme.customColors.error} />
+      <Dialog.Title style={dynamicStyles.deleteTitle}>
+        ¿Eliminar reseña?
+      </Dialog.Title>
+      <Dialog.Content>
+        <Text style={dynamicStyles.deleteText}>
+          Esta acción no se puede deshacer. Tu reseña será eliminada permanentemente.
+        </Text>
+      </Dialog.Content>
+      <Dialog.Actions style={dynamicStyles.dialogActions}>
+        <Button
+          onPress={() => setShowDeleteDialog(false)}
+          style={dynamicStyles.cancelButton}
+        >
+          Cancelar
+        </Button>
+        <Button
+          mode="contained"
+          onPress={handleDeleteReview}
+          loading={saving}
+          style={dynamicStyles.confirmDeleteButton}
+        >
+          Eliminar
+        </Button>
+      </Dialog.Actions>
+    </Dialog>
+  </Portal>
+);
+
 
   // **RENDERIZAR OTRAS RESEÑAS** 📝
   const renderOtherReviews = () => {

@@ -162,34 +162,45 @@ const SignupScreen = ({ navigation }) => {
       gap: theme.spacing.sm,
       marginVertical: theme.spacing.lg,
     },
-    checkbox: {
-      width: 24,
-      height: 24,
-      borderRadius: 6,
-      borderWidth: 2,
-      borderColor: acceptedTerms ? theme.customColors.primary : theme.customColors.border.medium,
-      backgroundColor: acceptedTerms ? theme.customColors.primary : 'transparent',
-      justifyContent: 'center',
+    termsTouchable: {
+      flexDirection: 'row',
       alignItems: 'center',
+      marginTop: 20,
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        borderRadius: 6,
+        borderWidth: 2,
+        borderColor: theme.colors.border,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+        backgroundColor: theme.colors.background,
     },
     checkboxChecked: {
       backgroundColor: theme.customColors.primary,
       borderColor: theme.customColors.primary,
     },
     checkmark: {
-      color: 'white',
-      fontSize: 16,
+      color: '#fff',
       fontWeight: 'bold',
     },
     termsText: {
       flex: 1,
       fontSize: 14,
-      color: theme.customColors.text.secondary,
+      color: theme.colors.text,
       lineHeight: 20,
     },
     termsLink: {
       color: theme.customColors.primary,
       textDecorationLine: 'underline',
+    },
+    disclaimer: {
+      fontSize: 12,
+      color: theme.colors.textSecondary,
+      marginTop: theme.spacing.md,
+      lineHeight: 16,
     },
     footer: {
       paddingHorizontal: theme.spacing.xl,
@@ -200,16 +211,16 @@ const SignupScreen = ({ navigation }) => {
     buttonRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      alignItems: 'center',
       gap: theme.spacing.sm,
+      marginBottom: theme.spacing.sm,
     },
     backButton: {
       flex: 1,
-      borderRadius: 10,
+      
     },
     nextButton: {
       flex: 1,
-      borderRadius: 10,
+      
     },
     loginContainer: {
       flexDirection: 'row',
@@ -267,16 +278,23 @@ const SignupScreen = ({ navigation }) => {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return firstName.isValid && lastName.isValid && firstName.value && lastName.value;
+        return firstName.value.trim() !== '' && lastName.value.trim() !== '' && !firstName.error && !lastName.error;
       case 2:
-        return email.isValid && password.isValid && confirmPassword.isValid && 
-               email.value && password.value && confirmPassword.value;
+        return (
+          email.value.trim() !== '' &&
+          password.value.trim() !== '' &&
+          confirmPassword.value.trim() !== '' &&
+          !email.error &&
+          !password.error &&
+          !confirmPassword.error
+        );
       case 3:
         return acceptedTerms;
       default:
         return false;
     }
   };
+
 
   // **NAVEGAR ENTRE PASOS** 🧭
   const handleNext = () => {
@@ -464,6 +482,7 @@ const SignupScreen = ({ navigation }) => {
               y se utilizan únicamente para demostrar las funcionalidades de Firebase.
             </Text>
           </View>
+
         );
 
       default:

@@ -88,11 +88,10 @@ const BookDetailScreen = ({ route, navigation }) => {
       bottom: 0,
     },
     heroContent: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      paddingHorizontal: theme.spacing.xl,
-      paddingBottom: theme.spacing.xl,
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      padding: 16,
+      borderRadius: 16,
+      backdropFilter: 'blur(10px)',
     },
     bookCover: {
       width: 120,
@@ -160,11 +159,16 @@ const BookDetailScreen = ({ route, navigation }) => {
       marginBottom: theme.spacing.lg,
     },
     detailCard: {
-      flex: 1,
+      padding: 12,
+      borderRadius: 12,
+      backgroundColor: theme.colors.background,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+      alignItems: 'center',
       minWidth: '45%',
-      padding: theme.spacing.md,
-      backgroundColor: theme.customColors.background.card,
-      borderRadius: 8,
+      margin: 5,
     },
     detailLabel: {
       fontSize: 12,
@@ -184,7 +188,11 @@ const BookDetailScreen = ({ route, navigation }) => {
       marginBottom: theme.spacing.lg,
     },
     genreChip: {
-      backgroundColor: theme.customColors.primary + '20',
+      backgroundColor: `${theme.customColors.primary}15`,
+      margin: 4,
+      borderRadius: 20,
+      paddingHorizontal: 12,
+      paddingVertical: 4
     },
     linksSection: {
       marginBottom: theme.spacing.lg,
@@ -213,8 +221,14 @@ const BookDetailScreen = ({ route, navigation }) => {
     },
     fab: {
       position: 'absolute',
-      right: theme.spacing.xl,
-      bottom: theme.spacing.xl,
+      right: 16,
+      bottom: 16,
+      backgroundColor: theme.customColors.secondary,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 5
     },
     loadingContainer: {
       flex: 1,
@@ -418,20 +432,25 @@ const BookDetailScreen = ({ route, navigation }) => {
     ];
 
     return (
-      <View style={dynamicStyles.statusButtons}>
+      <View style={[dynamicStyles.statusButtons, { flexWrap: 'wrap', justifyContent: 'center' }]}>
         {statuses.map(status => (
           <Button
             key={status.key}
-            mode={readingStatus === status.key ? 'contained' : 'outlined'}
+            mode={readingStatus === status.key ? 'contained-tonal' : 'outlined'}
             icon={status.icon}
             onPress={() => handleStatusChange(status.key)}
-            style={dynamicStyles.statusButton}
-            contentStyle={{ paddingVertical: 4 }}
+            style={[
+              dynamicStyles.statusButton,
+              { borderColor: getStatusColor(status.key), margin: 5 }
+            ]}
+            textColor={getStatusColor(status.key)}
+            buttonColor={readingStatus === status.key ? getStatusColor(status.key) : undefined}
           >
             {status.label}
           </Button>
         ))}
       </View>
+
     );
   };
 
@@ -443,7 +462,7 @@ const BookDetailScreen = ({ route, navigation }) => {
         <Dialog.Content style={dynamicStyles.dialogContent}>
           <View style={dynamicStyles.ratingSection}>
             <Text style={dynamicStyles.ratingLabel}>¿Qué te pareció este libro?</Text>
-            <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', marginVertical: 10 }}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <Icon
                   key={star}
@@ -451,10 +470,11 @@ const BookDetailScreen = ({ route, navigation }) => {
                   size={40}
                   color="#FFD700"
                   onPress={() => handleRating(star)}
-                  style={{ marginHorizontal: 5 }}
+                  style={{ marginHorizontal: 8, transform: [{ scale: star === userRating ? 1.2 : 1 }] }}
                 />
               ))}
             </View>
+
           </View>
         </Dialog.Content>
         <Dialog.Actions>
