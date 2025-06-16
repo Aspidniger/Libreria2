@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { 
   Text, 
-  Surface, 
+  Surface,
   Button, 
   TextInput,
   Portal,
@@ -102,42 +102,47 @@ const ReviewScreen = ({ route, navigation }) => {
       color: theme.customColors.text.secondary,
     },
     formSection: {
-      padding: theme.spacing.xl,
+      paddingHorizontal: 16,
+      paddingTop: 24,
+      paddingBottom: 32,
     },
     sectionTitle: {
-      fontSize: 18,
-      fontWeight: '600',
+      fontSize: 20,
+      fontWeight: '700',
+      marginBottom: 16,
       color: theme.customColors.text.primary,
-      marginBottom: theme.spacing.md,
-    },
+      },
     ratingSection: {
-      alignItems: 'center',
-      marginBottom: theme.spacing.xl,
-      padding: theme.spacing.lg,
-      backgroundColor: theme.customColors.background.card,
+      padding: 16,
       borderRadius: 12,
+      marginBottom: 24,
+      backgroundColor: theme.colors.surface,
+      elevation: 2,
     },
     ratingLabel: {
       fontSize: 16,
-      color: theme.customColors.text.primary,
-      marginBottom: theme.spacing.md,
-      textAlign: 'center',
+      color: theme.customColors.text.secondary,
+      marginBottom: 8,
+    },
+    starsContainer: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    },
+    starIcon: {
+      marginHorizontal: 4,
     },
     ratingValue: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: theme.customColors.primary,
-      marginTop: theme.spacing.sm,
+      fontSize: 14,
+      color: theme.customColors.text.secondary,
     },
     textInput: {
-      marginBottom: theme.spacing.md,
-      backgroundColor: theme.customColors.background.card,
+      marginBottom: 8,
+      borderRadius: 10,
     },
     charCounter: {
-      textAlign: 'right',
       fontSize: 12,
-      color: theme.customColors.text.secondary,
-      marginBottom: theme.spacing.lg,
+      alignSelf: 'flex-end',
+      marginBottom: 16,
     },
     charCounterWarning: {
       color: theme.customColors.warning,
@@ -145,15 +150,32 @@ const ReviewScreen = ({ route, navigation }) => {
     charCounterError: {
       color: theme.customColors.error,
     },
+    privacyContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 12,
+    padding: 12,
+    backgroundColor: theme.colors.surface,
+    marginBottom: 24,
+    elevation: 1,
+  },
+    privacyLabel: {
+      flex: 1,
+      marginLeft: 12,
+      color: theme.customColors.text.primary,
+    },
     buttonContainer: {
       flexDirection: 'row',
-      gap: theme.spacing.md,
-      marginTop: theme.spacing.lg,
+      justifyContent: 'space-between',
+      gap: 12,
     },
     button: {
       flex: 1,
+      borderRadius: 10,
+      paddingVertical: 6,
     },
     deleteButton: {
+       borderRadius: 10,
       borderColor: theme.customColors.error,
     },
     previewSection: {
@@ -520,8 +542,8 @@ const ReviewScreen = ({ route, navigation }) => {
               </View>
             </View>
           </View>
-
-          {/* Formulario de reseña */}
+ 
+                    {/* Formulario de reseña */}
           <View style={dynamicStyles.formSection}>
             <Text style={dynamicStyles.sectionTitle}>
               {isEditing ? 'Editar reseña' : 'Escribir reseña'}
@@ -529,18 +551,16 @@ const ReviewScreen = ({ route, navigation }) => {
 
             {/* Calificación */}
             <Surface style={dynamicStyles.ratingSection}>
-              <Text style={dynamicStyles.ratingLabel}>
-                ¿Qué te pareció este libro?
-              </Text>
-              <View style={{ flexDirection: 'row', marginVertical: 10 }}>
+              <Text style={dynamicStyles.ratingLabel}>¿Qué te pareció este libro?</Text>
+              <View style={dynamicStyles.starsContainer}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Icon
                     key={star}
                     name={star <= rating ? 'star' : 'star-outline'}
-                    size={32}
+                    size={28}
                     color="#FFD700"
                     onPress={() => setRating(star)}
-                    style={{ marginHorizontal: 5 }}
+                    style={dynamicStyles.starIcon}
                   />
                 ))}
               </View>
@@ -549,17 +569,17 @@ const ReviewScreen = ({ route, navigation }) => {
               </Text>
             </Surface>
 
-            {/* Texto de la reseña */}
+            {/* Texto de reseña */}
             <TextInput
               style={dynamicStyles.textInput}
               mode="outlined"
-              label="Escribe tu reseña"
+              label="Tu reseña"
               placeholder="Comparte tu opinión sobre este libro..."
               value={reviewText}
               onChangeText={setReviewText}
               multiline
               numberOfLines={6}
-              maxLength={maxCharacters + 50} // Permitir exceder para mostrar error
+              maxLength={maxCharacters + 50}
             />
 
             {/* Contador de caracteres */}
@@ -567,24 +587,14 @@ const ReviewScreen = ({ route, navigation }) => {
               {reviewText.length}/{maxCharacters} caracteres
             </Text>
 
-            {/* Configuración de privacidad */}
-            <Surface style={{ 
-              flexDirection: 'row', 
-              alignItems: 'center', 
-              padding: theme.spacing.md,
-              borderRadius: 8,
-              marginBottom: theme.spacing.lg 
-            }}>
+            {/* Privacidad */}
+            <Surface style={dynamicStyles.privacyContainer}>
               <Icon 
                 name={isPrivate ? "lock" : "earth"} 
                 size={20} 
                 color={theme.customColors.text.secondary} 
               />
-              <Text style={{ 
-                flex: 1, 
-                marginLeft: theme.spacing.md,
-                color: theme.customColors.text.primary 
-              }}>
+              <Text style={dynamicStyles.privacyLabel}>
                 {isPrivate ? 'Reseña privada' : 'Reseña pública'}
               </Text>
               <Button
@@ -600,13 +610,14 @@ const ReviewScreen = ({ route, navigation }) => {
             <View style={dynamicStyles.buttonContainer}>
               <Button
                 mode="outlined"
+                icon="eye"
                 onPress={() => setShowPreview(true)}
                 style={dynamicStyles.button}
                 disabled={rating === 0 || reviewText.trim().length < 10}
               >
                 Vista previa
               </Button>
-              
+
               <Button
                 mode="contained"
                 onPress={handleSaveReview}
@@ -618,19 +629,20 @@ const ReviewScreen = ({ route, navigation }) => {
               </Button>
             </View>
 
-            {/* Botón de eliminar (solo en modo edición) */}
+            {/* Eliminar reseña */}
             {isEditing && (
               <Button
                 mode="outlined"
                 icon="delete"
                 onPress={() => setShowDeleteDialog(true)}
-                style={[dynamicStyles.deleteButton, { marginTop: theme.spacing.md }]}
+                style={dynamicStyles.deleteButton}
                 textColor={theme.customColors.error}
               >
                 Eliminar reseña
               </Button>
             )}
           </View>
+
 
           <Divider />
 
