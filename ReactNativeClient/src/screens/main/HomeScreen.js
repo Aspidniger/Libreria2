@@ -56,22 +56,24 @@ const HomeScreen = ({ navigation }) => {
       backgroundColor: theme.customColors.background.primary,
     },
     scrollContent: {
-      paddingBottom: 100, // Espacio para el FAB
+      paddingBottom: 100,
     },
     header: {
       paddingHorizontal: theme.spacing.xl,
       paddingVertical: theme.spacing.lg,
     },
     greeting: {
-      fontSize: 28,
-      fontWeight: 'bold',
+      fontSize: 30,
+      fontWeight: '700',
       color: theme.customColors.text.primary,
-      marginBottom: theme.spacing.xs,
+      marginBottom: theme.spacing.sm,
+      lineHeight: 36,
     },
     subgreeting: {
       fontSize: 16,
       color: theme.customColors.text.secondary,
-      lineHeight: 22,
+      lineHeight: 24,
+      marginBottom: theme.spacing.md,
     },
     section: {
       marginVertical: theme.spacing.md,
@@ -81,28 +83,37 @@ const HomeScreen = ({ navigation }) => {
       marginBottom: theme.spacing.md,
     },
     sectionTitle: {
-      fontSize: 20,
-      fontWeight: '600',
+      fontSize: 22,
+      fontWeight: '700',
       color: theme.customColors.text.primary,
       marginBottom: theme.spacing.xs,
     },
     sectionSubtitle: {
       fontSize: 14,
       color: theme.customColors.text.secondary,
+      lineHeight: 20,
     },
     statsContainer: {
       flexDirection: 'row',
       paddingHorizontal: theme.spacing.md,
-      gap: theme.spacing.sm,
+      justifyContent: 'space-between',
     },
     statCard: {
       flex: 1,
+      marginRight: theme.spacing.sm,
+    },
+    statCardLast: {
+      marginRight: 0,
     },
     booksContainer: {
       paddingHorizontal: theme.spacing.md,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
     },
     bookCard: {
-      marginBottom: theme.spacing.sm,
+      width: '48%',
+      marginBottom: theme.spacing.md,
     },
     divider: {
       marginVertical: theme.spacing.lg,
@@ -115,24 +126,29 @@ const HomeScreen = ({ navigation }) => {
     actionGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: theme.spacing.md,
+      justifyContent: 'space-between',
     },
     actionCard: {
       flex: 1,
       minWidth: '45%',
       padding: theme.spacing.lg,
       backgroundColor: theme.customColors.background.card,
-      borderRadius: 12,
+      borderRadius: 16,
       alignItems: 'center',
-      ...theme.shadows.small,
+      elevation: 4,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.15,
+      shadowRadius: 4,
+      marginBottom: theme.spacing.md,
     },
     actionIcon: {
-      fontSize: 32,
+      fontSize: 34,
       marginBottom: theme.spacing.sm,
     },
     actionTitle: {
       fontSize: 16,
-      fontWeight: '600',
+      fontWeight: '700',
       color: theme.customColors.text.primary,
       textAlign: 'center',
     },
@@ -146,6 +162,7 @@ const HomeScreen = ({ navigation }) => {
       minHeight: 400,
     }
   });
+
 
   // **CARGAR DATOS INICIALES** 📥
   const loadData = useCallback(async () => {

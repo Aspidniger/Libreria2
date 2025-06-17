@@ -19,12 +19,23 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { firestoreService } from '../../services/firebase/firestoreService';
-
+import { useThemeContext } from '../../context/ThemeContext';
 import { 
   LoadingSpinner, 
   StatsCard,
   ErrorState
 } from '../../components/common';
+
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { getApp } from 'firebase/app';
+import { TouchableOpacity } from 'react-native';
+
+import { Provider as PaperProvider } from 'react-native-paper';
+import { useColorScheme } from 'react-native';
+
+
 
 /**
  * **PANTALLA PROFILE EDUCATIVA** 👤
@@ -57,6 +68,7 @@ const ProfileScreen = ({ navigation }) => {
   const [stats, setStats] = useState(null);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
   
   // Estados para diálogos
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
@@ -72,6 +84,38 @@ const ProfileScreen = ({ navigation }) => {
     apellido: '',
     bio: ''
   });
+
+  // **Modo oscuro** 🌙
+  const App = () => {
+    const scheme = useColorScheme();
+    const isDarkMode = scheme === 'dark';
+
+    return (
+      <PaperProvider theme={isDarkMode ? DarkTheme : DefaultTheme}>
+        <Navigation />
+      </PaperProvider>
+    );
+  };
+
+  // **Cargar imagen de perfil**  🖼
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Permiso denegado para acceder a la galería.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      setSelectedImage(uri); // debes tener un estado para mostrarla
+    }
+  };
 
   // **ESTILOS DINÁMICOS** 🎨
   const dynamicStyles = StyleSheet.create({
@@ -177,6 +221,12 @@ const ProfileScreen = ({ navigation }) => {
     formField: {
       marginBottom: theme.spacing.md,
     },
+    avatarImage: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+    },
+
   });
 
   // **CARGAR DATOS** 📥
@@ -237,6 +287,41 @@ const ProfileScreen = ({ navigation }) => {
       showError('Error cerrando sesión');
     }
   }, [logout, showSuccess, showError]);
+
+  // **MANEJAR SELECCIÓN DE IMAGEN** 🖼
+  
+  const handlePickImage = async () => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== 'granted') {
+    alert('Se requiere permiso para acceder a la galería.');
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaType.IMAGE,
+    allowsEditing: true,
+    aspect: [1, 1],
+    quality: 0.7,
+  });
+
+  if (!result.canceled) {
+    const uri = result.assets[0].uri;
+
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    const storage = getStorage(getApp(), 'http://127.0.0.1:9199'); // Emulador
+    const storageRef = ref(storage, `profilePictures/${user.uid}.jpg`);
+
+    await uploadBytes(storageRef, blob);
+    const downloadURL = await getDownloadURL(storageRef);
+    setProfileImage(downloadURL);
+
+    // Opcional: guardar en Firestore si quieres persistirlo
+    // await setDoc(doc(getFirestore(), 'users', user.uid), { photoURL: downloadURL }, { merge: true });
+  }
+};
+
 
   // **MANEJAR EDICIÓN DE PERFIL** ✏️
   const handleEditProfile = useCallback(async () => {
@@ -499,14 +584,22 @@ const ProfileScreen = ({ navigation }) => {
         {/* Header con información del usuario */}
         <View style={dynamicStyles.header}>
           <View style={dynamicStyles.avatarContainer}>
-            <Avatar.Text
-              size={100}
-              label={getUserInitials()}
-              style={dynamicStyles.avatar}
-            />
-            <Surface style={dynamicStyles.editAvatarButton}>
+            {profileImage ? (
+              <Image
+                source={{ uri: profileImage }}
+                style={dynamicStyles.avatarImage}
+              />
+            ) : (
+              <Avatar.Text
+                size={100}
+                label={getUserInitials()}
+                style={dynamicStyles.avatar}
+              />
+            )}
+
+            <TouchableOpacity onPress={pickImage} style={dynamicStyles.editAvatarButton}>
               <Icon name="camera" size={20} color="white" />
-            </Surface>
+            </TouchableOpacity>
           </View>
           
           <View style={dynamicStyles.userInfo}>

@@ -1,4 +1,4 @@
-import { MD3LightTheme } from 'react-native-paper';
+import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
 /**
  * **CONFIGURACIÓN DE TEMA EDUCATIVO** 🎨
@@ -85,20 +85,44 @@ export const shadows = {
 };
 
 // Tema personalizado para React Native Paper
-export const theme = {
+export const lightTheme = {
   ...MD3LightTheme,
-  colors: {
-    ...MD3LightTheme.colors,
-    primary: colors.primary,
-    secondary: colors.secondary,
-    error: colors.error,
-    background: colors.background.primary,
-    surface: colors.background.card,
-    onSurface: colors.text.primary,
+  customColors: {
+    primary: '#4CAF50',
+    background: {
+      primary: '#FFFFFF',
+    },
+    text: {
+      primary: '#000000',
+      secondary: '#666666',
+    },
+    border: {
+      light: '#E0E0E0',
+    },
   },
-  // Agregar propiedades personalizadas
-  spacing,
+  spacing: {
+    sm: 4,
+    md: 8,
+    lg: 16, // ✅ Esta línea es necesaria
+  },
   typography,
   shadows,
   customColors: colors,
+};
+
+export const darkTheme = {
+  ...MD3DarkTheme,
+  customColors: {
+    primary: '#81C784',
+    background: {
+      primary: '#121212',
+    },
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#CCCCCC',
+    },
+    border: {
+      light: '#333333',
+    },
+  },
 };

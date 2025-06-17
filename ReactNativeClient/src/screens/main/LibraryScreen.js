@@ -4,6 +4,7 @@ import { Text, Surface, Chip, Button, Searchbar, FAB } from 'react-native-paper'
 import { useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -149,6 +150,18 @@ const LibraryScreen = ({ navigation }) => {
       right: theme.spacing.xl,
       bottom: theme.spacing.xl,
     },
+    chip: {
+      marginRight: theme.spacing.xs,
+      marginBottom: theme.spacing.xs,
+      elevation: 2,
+      borderWidth: 1,
+      borderColor: theme.colors.backdrop,
+    },
+    chipSelected: {
+      backgroundColor: theme.customColors.primary,
+      borderColor: theme.customColors.primary,
+      elevation: 4,
+},
   });
 
   // **CARGAR DATOS** 📥
@@ -291,30 +304,28 @@ const LibraryScreen = ({ navigation }) => {
 
   // **RENDERIZAR ESTADÍSTICAS** 📊
   const renderStats = () => {
-    if (!stats) return null;
+  if (!stats) return null;
 
     return (
       <View style={dynamicStyles.statsContainer}>
         <View style={dynamicStyles.statItem}>
+          <MaterialCommunityIcons name="book-open-page-variant" size={28} color={theme.customColors.primary} />
           <Text style={dynamicStyles.statValue}>{books.length}</Text>
           <Text style={dynamicStyles.statLabel}>Total</Text>
         </View>
         <View style={dynamicStyles.statItem}>
-          <Text style={dynamicStyles.statValue}>
-            {books.filter(b => b.estadoLectura === 'read').length}
-          </Text>
+          <MaterialCommunityIcons name="check-circle-outline" size={28} color={theme.customColors.primary} />
+          <Text style={dynamicStyles.statValue}>{books.filter(b => b.estadoLectura === 'read').length}</Text>
           <Text style={dynamicStyles.statLabel}>Leídos</Text>
         </View>
         <View style={dynamicStyles.statItem}>
-          <Text style={dynamicStyles.statValue}>
-            {books.filter(b => b.estadoLectura === 'reading').length}
-          </Text>
+          <MaterialCommunityIcons name="book-reader" size={28} color={theme.customColors.primary} />
+          <Text style={dynamicStyles.statValue}>{books.filter(b => b.estadoLectura === 'reading').length}</Text>
           <Text style={dynamicStyles.statLabel}>Leyendo</Text>
         </View>
         <View style={dynamicStyles.statItem}>
-          <Text style={dynamicStyles.statValue}>
-            {books.filter(b => b.estadoLectura === 'want-to-read').length}
-          </Text>
+          <MaterialCommunityIcons name="bookmark-outline" size={28} color={theme.customColors.primary} />
+          <Text style={dynamicStyles.statValue}>{books.filter(b => b.estadoLectura === 'want-to-read').length}</Text>
           <Text style={dynamicStyles.statLabel}>Por leer</Text>
         </View>
       </View>
@@ -332,10 +343,14 @@ const LibraryScreen = ({ navigation }) => {
             {categories.map(category => (
               <Chip
                 key={category}
-                mode={selectedCategory === category ? 'flat' : 'outlined'}
-                selected={selectedCategory === category}
+                mode="outlined"
                 onPress={() => setSelectedCategory(category)}
-                style={dynamicStyles.chip}
+                style={[
+                  dynamicStyles.chip,
+                  selectedCategory === category && dynamicStyles.chipSelected,
+                ]}
+                selected={selectedCategory === category}
+                accessibilityLabel={`Filtro categoría ${category === 'all' ? 'Todas' : category}${selectedCategory === category ? ', seleccionado' : ''}`}
               >
                 {category === 'all' ? 'Todas' : category}
               </Chip>
